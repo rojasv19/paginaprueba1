@@ -1,1 +1,212 @@
-<H1>Probando Probando 1234</H1>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Nuevo sitio en camino — Somos Pixart</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0c10;
+    --fg:#e6e6e6;
+    --muted:#a9abb3;
+    --card:rgba(255,255,255,.06);
+    --card-border:rgba(255,255,255,.18);
+    --accent1:#FFFFFF; /* violeta */
+    --accent2:#9D52FF; /* cian */
+    --accent3:#9D52FF; /* ámbar */
+  }
+  @media (prefers-color-scheme: light){
+    :root{
+      --bg:#f7f7f8;
+      --fg:#0c0d11;
+      --muted:#5b606b;
+      --card:rgba(255,255,255,.7);
+      --card-border:rgba(0,0,0,.06);
+    }
+  }
+
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    background: var(--bg); color:var(--fg); overflow-x:hidden;
+  }
+
+  /* Fondo: grid sutil + blob mesh animado + grano fino */
+  .stage{
+    position:relative; min-height:100%;
+    display:grid; place-items:center; padding:clamp(24px,3vw,48px);
+    background:
+      radial-gradient(circle at 20% 10%, rgba(255,255,255,.06) 0 12%, transparent 13%) 0 0/160px 160px,
+      radial-gradient(circle at 80% 90%, rgba(255,255,255,.03) 0 10%, transparent 11%) 0 0/200px 200px,
+      linear-gradient(180deg, transparent, transparent 40%, rgba(255,255,255,.02) 100%);
+    isolation:isolate;
+  }
+  .blob{
+    position:absolute; inset:-20% -10% auto auto; width:80vmax; height:80vmax; filter: blur(80px);
+    background: radial-gradient(closest-side at 30% 30%, var(--accent2), transparent 60%),
+                radial-gradient(closest-side at 70% 40%, var(--accent1), transparent 60%),
+                radial-gradient(closest-side at 50% 70%, var(--accent3), transparent 60%);
+    opacity:.45; z-index:-2; animation: float 16s ease-in-out infinite alternate;
+    transform: translate3d(0,0,0);
+  }
+  @keyframes float{
+    0%   {transform: translate(-8%, -6%) scale(1);}
+    100% {transform: translate(6%, 4%)   scale(1.07);}
+  }
+  .grain{
+    position:absolute; inset:0; pointer-events:none; z-index:-1; mix-blend-mode:soft-light; opacity:.25;
+    background-image: url('data:image/svg+xml;utf8,\
+      <svg xmlns="http://www.w3.org/2000/svg" width=\"300\" height=\"300\">\
+      <filter id=\"n\"><feTurbulence type=\"fractalNoise\" baseFrequency=\"0.9\" numOctaves=\"2\"/></filter>\
+      <rect width=\"100%\" height=\"100%\" filter=\"url(%23n)\" opacity=\"0.25\"/></svg>');
+    background-size: 300px 300px;
+  }
+
+  /* Toggle modo (solo CSS) */
+  .mode{
+    position:fixed; top:18px; right:18px; z-index:10; display:flex; align-items:center; gap:8px;
+    font-size:12px; color:var(--muted);
+  }
+  .mode input{appearance:none; width:44px; height:26px; border-radius:999px; position:relative; cursor:pointer;
+    background:linear-gradient(90deg, var(--accent2), var(--accent1)); outline:none; border:1px solid var(--card-border);
+  }
+  .mode input::after{
+    content:""; position:absolute; top:3px; left:3px; width:20px; height:20px; border-radius:50%;
+    background:#fff; transition:transform .25s ease;
+  }
+  .mode input:checked::after{ transform: translateX(18px);}
+  /* Implementación simple: el toggle afecta una clase en :root con el selector de estado */
+  .mode input:checked ~ .root { filter: invert(1) hue-rotate(180deg); }
+
+  /* Contenido */
+  .card{
+    width:min(880px, 92vw);
+    border-radius:24px; padding: clamp(28px, 5vw, 52px);
+    background: var(--card);
+    border:1px solid var(--card-border);
+    backdrop-filter: blur(10px) saturate(120%);
+    box-shadow: 0 10px 40px rgba(0,0,0,.25);
+  }
+  .badge{
+    display:inline-flex; align-items:center; gap:10px; padding:8px 14px; border-radius:999px;
+    font-weight:600; letter-spacing:.2px; color:var(--fg); background:rgba(255,255,255,.08);
+    border:1px solid var(--card-border);
+  }
+  .badge-dot{width:8px; height:8px; border-radius:50%; background:linear-gradient(90deg,var(--accent2),var(--accent1)); box-shadow:0 0 10px var(--accent2)}
+  .title{
+    margin:18px 0 10px; font-weight:900; line-height:1.05;
+    font-size:clamp(36px, 7vw, 84px);
+    letter-spacing:-.02em;
+    background: linear-gradient(90deg, var(--fg) 0%, var(--accent2) 40%, var(--accent1) 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .title2{
+    margin:18px 0 10px; font-weight:300; line-height:1.05;
+    font-size:clamp(60px, 7vw, 64px);
+    letter-spacing:-.02em;
+    background: linear-gradient(90deg, var(--fg) 0%, var(--accent1) 40%, var(--accent1) 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .subtitle{
+    color:var(--muted); font-size:clamp(16px,2.5vw,20px); line-height:1.6; max-width:60ch; margin:0 auto 26px;
+  }
+
+  /* CTA */
+  .cta{
+    display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:26px;
+  }
+  .input{
+    flex:1 1 260px; max-width:420px;
+    background: rgba(0,0,0,.25); color:var(--fg); border:1px solid var(--card-border);
+    border-radius:14px; padding:14px 16px; outline:none; font-size:16px;
+    transition: border-color .2s ease, box-shadow .2s ease;
+  }
+  .input::placeholder{ color:rgba(255,255,255,.45); }
+  .input:focus{ border-color: var(--accent2); box-shadow: 0 0 0 4px rgba(34,211,238,.15); }
+
+  .btn{
+    flex:0 0 auto; border:0; cursor:pointer; border-radius:14px; padding:14px 18px; font-weight:700; font-size:16px;
+    color:#0b0c10; background: linear-gradient(90deg, var(--accent2), var(--accent1));
+    box-shadow: 0 8px 24px rgba(139,92,246,.35); transition: transform .15s ease, box-shadow .2s ease;
+  }
+  .btn:hover{ transform: translateY(-1px); box-shadow: 0 10px 30px rgba(139,92,246,.45); }
+  .btn:active{ transform: translateY(0); }
+
+  /* Footer pequeño dentro de la card */
+  .meta{
+    margin-top:26px; display:flex; gap:14px; justify-content:center; align-items:center; flex-wrap:wrap;
+    color:var(--muted); font-size:14px;
+  }
+  .logo{
+    width:26px; height:26px; border-radius:6px; display:inline-grid; place-items:center; color:#0b0c10;
+    background: conic-gradient(from 180deg, var(--accent2), var(--accent1), var(--accent3));
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.5);
+    font-weight:900;
+  }
+
+  /* Chips de capacidades */
+  .tags{
+    display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:18px;
+  }
+  .tag{
+    padding:8px 12px; border-radius:999px; font-size:13px; color:var(--fg);
+    background: rgba(255,255,255,.08); border:1px solid var(--card-border);
+    transition: transform .15s ease;
+  }
+  .tag:hover{ transform: translateY(-2px); }
+
+  /* Micro animación de entrada */
+  .card{ opacity:0; transform: translateY(12px); animation: show .7s ease .1s forwards; }
+  @keyframes show{ to{opacity:1; transform:none;} }
+</style>
+</head>
+<body>
+  <!-- Toggle de modo (decorativo, efecto visual global) -->
+  <label class="mode">
+    <input type="checkbox" aria-label="Cambiar modo de color">
+    <span>modo</span>
+    <!-- La inversión se aplica sobre el contenedor raíz .root vía selector hermano -->
+  </label>
+
+  <div class="stage root">
+    <div class="blob"></div>
+    <div class="grain"></div>
+
+    <main class="card" role="main" aria-labelledby="t">
+      <span class="badge"><span class="badge-dot"></span> Nuevo sitio web en camino</span>
+      <h1 class="title" id="t">Diseño, web & apps con enfoque en funcionalidad</h1>
+      <br>
+      <h1 class="title2" id="t">Website La Mujer Positiva</h1>
+      <br>
+      <p class="subtitle">
+        Estamos construyendo una nueva web con experiencia rápida, accesible y moderna.
+        En Somos Pixart, hacemos que tu empresa destaque con un diseño original y de calidad.
+      </p>
+
+      <div class="tags" aria-label="capacidades">
+        <span class="tag">Identidad Visual</span>
+        <span class="tag">Diseño Web</span>
+        <span class="tag">UI · UX</span>
+        <span class="tag">Apps iOS · Android</span>
+        <span class="tag">E-commerce</span>
+      </div>
+
+      <form class="cta" onsubmit="event.preventDefault(); this.reset(); alert('¡Listo! Te avisaremos cuando estemos en línea.');" aria-label="notificación de lanzamiento">
+        <input class="input" type="email" placeholder="Tu email para avisarte al estar en línea" aria-label="Correo electrónico" required>
+        <button class="btn" type="submit">Avísenme</button>
+      </form>
+
+      <div class="meta">
+        
+        <a href="https://somospixart.com" target="_blank" style="display: flex; align-items: center; gap: 8px; text-decoration: none; color: inherit;">
+  <img src="https://somospixart.com/wp-content/uploads/2025/08/logo-pixart-2.png" alt="Logo Somos Pixart" width="30" height="auto" style="max-width: 100%; height: auto;">
+  <span>Somos Pixart — Agencia Creativa</span>
+</a>
+
+      </div>
+    </main>
+  </div>
+</body>
+</html>
